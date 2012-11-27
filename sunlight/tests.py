@@ -1,17 +1,21 @@
-from django.utils import unittest
-from django_webtest import WebTest
+from django.test import LiveServerTestCase
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 
-class AcceptanceTestCase(WebTest):
+class AcceptanceTest(LiveServerTestCase):
+
     def setUp(self):
-        pass
+        self.browser = webdriver.Firefox()
+        self.browser.implicitly_wait(3)
+
+    def tearDown(self):
+        self.browser.quit()
 
     def testUserCanSeeDepression(self):
-        index = self.app.get("/")
-        assert 200 == index.status_code
-        
-        form = index.form
-        form['location'] = 'Stockholm'
-        location = form.submit().follow()
-        assert location.request.path_info == '/stockholm'
-        assert 200 == location.status_code
-        assert "Very Depressing" == location.content
+        index = self.browser.get(self.live_server_url)
+        location_field = self.browser.find_element_by_name('location')
+        location_field.send_keys('Stockholm')
+        location_field.send_keys(Keys.RETURN)
+
+        body = self.browser.find_element_by_tag_name('body')
+        assert "Very Depressing" == body.get_attribute("innerHTML")
