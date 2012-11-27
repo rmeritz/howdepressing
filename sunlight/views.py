@@ -1,6 +1,6 @@
 from django.template import loader, RequestContext
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.core.context_processors import csrf
 
 def index(request):
@@ -10,3 +10,6 @@ def index(request):
 
 def location(request):
     return HttpResponse("Very Depressing")
+
+def sunlight(request):
+    return redirect('/' + request.POST['location'])
