@@ -1,0 +1,7 @@
+<form action="/sunlight" method="post">
+  {% csrf_token %}
+  <label>Location:
+    <input type="text" name="location" id="location" />
+  </label>
+  <input type="submit" value="Submit" />
+</form>

@@ -1,16 +1,17 @@
 from django.utils import unittest
-from django.test.client import Client
-#from lxml import html
+from django_webtest import WebTest
 
-class AcceptanceTestCase(unittest.TestCase):
+class AcceptanceTestCase(WebTest):
     def setUp(self):
         pass
 
     def testUserCanSeeDepression(self):
-        c = Client()
-        response = c.get("/")
-        assert 200 == response.status_code
-
-        response = c.get("/stockholm")
-        assert 200 == response.status_code
-        assert "Very Depressing" == response.content
+        index = self.app.get("/")
+        assert 200 == index.status_code
+        
+        form = index.form
+        form['location'] = 'Stockholm'
+        location = form.submit().follow()
+        assert location.request.path_info == '/stockholm'
+        assert 200 == location.status_code
+        assert "Very Depressing" == location.content
