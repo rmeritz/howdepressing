@@ -66,17 +66,17 @@ class DepressionIndicatorTest(unittest.TestCase):
                          level)
 
 class FakeDepressingUrllib:
-    def __init__(self, location_to_sunlights):
-        self.location_to_sunlights = location_to_sunlights
+    def __init__(self, fake_data):
+        self.fake_data = fake_data
 
     def urlopen(self, url):
-        for location, sunlights in self.location_to_sunlights.items():
-            if (location in url):
-                if ('google' in url):
-                    return self.__string_io_google(location)
-                else:
-                    return self.__string_io_wunderground(sunlights)
-        return self.__empty_string_io()
+        for (city, country, sunrise, sunset) in self.fake_data:
+          if ('google' in url):
+              return self.__string_io_google(city, country)
+          elif (city in url and country in url):
+              return self.__string_io_wunderground((sunrise, sunset))
+          else:
+              print 'Bad URL'
 
     def __string_io_wunderground(self, sunlights):
         s = StringIO.StringIO()
@@ -84,14 +84,10 @@ class FakeDepressingUrllib:
         s.seek(0)
         return s
 
-    def __string_io_google(self, location):
+    def __string_io_google(self, city, country):
         s = StringIO.StringIO()
-        s.write(self.__google_json(location))
+        s.write(self.__google_json(city, country))
         s.seek(0)
-        return s
-
-    def __empty_string_io(self):
-        s = StringIO.StringIO()
         return s
 
     def __wunderground_json(self, sunlights):
@@ -130,22 +126,34 @@ class FakeDepressingUrllib:
 }"""
         return json % sunlight_strings
 
-    def __google_json(self, location):
+    def __google_json(self, city, country):
+        location_data = {'city': city, 'country':country}
         json = """{
    "results" : [
-      {
+         {
          "address_components" : [
             {
-               "long_name" : "%s",
-               "short_name" : "Stockholm",
+               "long_name" : "%(city)s",
+               "short_name" : "Barcelona",
                "types" : [ "locality", "political" ]
             },
             {
-               "long_name" : "Sweden",
-               "short_name" : "SE",
+               "long_name" : "Barcelona",
+               "short_name" : "B",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "Catalua",
+               "short_name" : "CT",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "%(country)s",
+               "short_name" : "ES",
                "types" : [ "country", "political" ]
             }
          ],
+      
          "formatted_address" : "Stockholm, Sweden",
          "geometry" : {
             "bounds" : {
@@ -179,14 +187,13 @@ class FakeDepressingUrllib:
    ],
    "status" : "OK"
 }"""
-        return json % location
+        return json % location_data
 
 class WeatherApiTest(unittest.TestCase):
     def testFindsSunriseAndSunset(self):
-        fake_http = FakeDepressingUrllib({
-                'Stockholm': (1000, 1400),
-                'Barcelona': (559, 2201)
-                })
+        fake_http = FakeDepressingUrllib(
+            [('Stockholm', 'Sweden', 1000, 1400),
+             ('Barcelona', 'Spain', 559, 2201)])
         weather_api = WeatherApi(fake_http)
         self.assertEqual(weather_api.sunrise_and_sunset('Stockholm'),
                          (1000, 1400))

@@ -33,7 +33,9 @@ class WeatherApi:
         return self.__sunrise_and_sunset(city, country)
 
     def __city_and_country(self, location):
+        print self.__google_url(location) 
         json_file = self.urllib.urlopen(self.__google_url(location))
+        
         location_info = json.load(json_file)
         address_components = location_info['results'][0]['address_components']
         city = address_components[0]['long_name']
