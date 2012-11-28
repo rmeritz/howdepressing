@@ -43,10 +43,15 @@ class WeatherApi:
         country = address_components[1]['long_name']
         return (city, country)
 
+    def __weather_json(self, city, country):
+        json_file = self.urllib.urlopen(self.__wunder_url(city, country))
+
     def __google_url(self, location):
         return ("https://maps.googleapis.com/maps/api/geocode/json?"
                "address=%s&sensor=false") % location
 
-    def __wunder_url(self):
-        'http://api.wunderground.com/api/Your_Key/astronomy/q/Australia/Sydney.json'
+    def __wunder_url(self, city, country):
+        url_data = {'key': "fake_key",'city': city, 'country': country}
+        return ("http://api.wunderground.com/api/%(key)/astronomy/"
+                "q/%(country)/%(city).json") % url_data
     
