@@ -1,6 +1,8 @@
-from django.test import LiveServerTestCase, unittest
+from django.test import LiveServerTestCase
+from django.utils import unittest
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from sunlight.models import SunlightDetector
 
 class AcceptanceTest(LiveServerTestCase):
     def setUp(self):
@@ -53,5 +55,5 @@ class SunlightDetectorTest(unittest.TestCase):
     def testTextForAVeryDepressingPlace(self):
         fake_weather_api = FakeWeatherApi(sunrise = 1000, sunset = 1400)
         detector = SunlightDetector('stockholm', fake_weather_api)
-        depression_indicator = decector.detect
-        assert "Very Depressing" == depression_indicator.text
+        depression_indicator = detector.detect()
+        assert "Very Depressing" == depression_indicator.text()
