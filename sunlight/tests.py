@@ -23,7 +23,9 @@ class AcceptanceTest(LiveServerTestCase):
         location_field.send_keys(Keys.RETURN)
 
         body = self.browser.find_element_by_tag_name('body')
-        assert "Very Depressing" == body.get_attribute("innerHTML")
+        self.assertEqual(
+            body.get_attribute("innerHTML"),
+            "Very Depressing")
 
 class FakeWeatherApi:
     def __init__(self, sunrise, sunset):
@@ -69,8 +71,6 @@ class FakeDepressingUrllib:
 
     def urlopen(self, url):
         for location, sunlights in self.location_to_sunlights.items():
-            print location
-            print sunlights
             if (location in url):
                 if ('google' in url):
                     return self.__string_io_google(location)
@@ -81,17 +81,16 @@ class FakeDepressingUrllib:
     def __string_io_wunderground(self, sunlights):
         s = StringIO.StringIO()
         s.write(self.__wunderground_json(sunlights))
+        s.seek(0)
         return s
 
     def __string_io_google(self, location):
-        print "In google fake"
         s = StringIO.StringIO()
         s.write(self.__google_json(location))
         s.seek(0)
         return s
 
     def __empty_string_io(self):
-        print "Well we are clearly here"
         s = StringIO.StringIO()
         return s
 
@@ -120,12 +119,12 @@ class FakeDepressingUrllib:
   "minute": "56"
   },
   "sunrise": {
-  "hour": "%(sunrise_hour),
-  "minute": "%(sunrise_minute)"
+  "hour": "%(sunrise_hour)s",
+  "minute": "%(sunrise_minute)s"
   },
   "sunset": {
-  "hour": "%(sunset_hour)",
-  "minute": "%(sunset_minute)"
+  "hour": "%(sunset_hour)s",
+  "minute": "%(sunset_minute)s"
   }
   }
 }"""
