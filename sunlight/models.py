@@ -36,8 +36,8 @@ class WeatherApi:
         json_file = self.urllib.urlopen(self.__google_url(location))
         location_info = json.load(json_file)
         address_components = location_info['results'][0]['address_components']
-        city = address_components[0]['long_name']
-        country = address_components[1]['long_name']
+        city = filter(lambda x: x['types'] == [u'locality', u'political'], address_components)[0]['long_name']
+        country = filter(lambda x: x['types'] == [u'country', u'political'], address_components)[0]['long_name']
         return (city, country)
 
     def __sunrise_and_sunset(self, city, country):
