@@ -27,6 +27,18 @@ class AcceptanceTest(LiveServerTestCase):
             body.get_attribute("innerHTML"),
             "Very Depressing")
 
+    def testUserCanSeeError(self):
+        erroring_place = 'NonexistantPlace'
+        index = self.browser.get(self.live_server_url)
+        location_field = self.browser.find_element_by_name('location')
+        location_field.send_keys(erroring_place)
+        location_field.send_keys(Keys.RETURN)
+
+        body = self.browser.find_element_by_tag_name('body')
+        self.assertEqual(
+            body.get_attribute("innerHTML"),
+            "We're depressed to tell you we don't know how depressing %s is at the moment." % erroring_place)
+
 class FakeWeatherApi:
     def __init__(self, sunrise, sunset):
         self.sunrise = sunrise

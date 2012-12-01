@@ -13,9 +13,13 @@ def index(request):
 
 def location(request):
     location = request.path.strip('/')
-    detector = SunlightDetector(location, WeatherApi(urllib))
-    depression_indicator = detector.detect()
-    return HttpResponse(depression_indicator.text())
+    try:
+        detector = SunlightDetector(location, WeatherApi(urllib))
+        depression_indicator = detector.detect()
+        return HttpResponse(depression_indicator.text())
+    except:
+        error = "We're depressed to tell you we don't know how depressing %s is at the moment." % location
+        return HttpResponse(content=error, status=500)
 
 def sunlight(request):
     return redirect('/' + request.POST['location'])
