@@ -66,15 +66,17 @@ class DepressionIndicatorTest(unittest.TestCase):
                          level)
 
 class FakeDepressingUrllib:
-    def __init__(self, fake_data):
-        self.fake_data = fake_data
+    def __init__(self, city, country, sunrise, sunset):
+        self.city = city
+        self.country = country
+        self.sunrise = sunrise
+        self.sunset = sunset
 
     def urlopen(self, url):
-        for (city, country, sunrise, sunset) in self.fake_data:
           if ('google' in url):
-              return self.__string_io_google(city, country)
-          elif (city in url and country in url):
-              return self.__string_io_wunderground((sunrise, sunset))
+              return self.__string_io_google(self.city, self.country)
+          elif (self.city in url and self.country in url):
+              return self.__string_io_wunderground((self.sunrise, self.sunset))
           else:
               print 'Bad URL'
 
@@ -191,11 +193,9 @@ class FakeDepressingUrllib:
 
 class WeatherApiTest(unittest.TestCase):
     def testFindsSunriseAndSunset(self):
-        fake_http = FakeDepressingUrllib(
-            [('Stockholm', 'Sweden', 1000, 1400),
-             ('Barcelona', 'Spain', 559, 2201)])
-        weather_api = WeatherApi(fake_http)
-        self.assertEqual(weather_api.sunrise_and_sunset('Stockholm'),
+        fake_stockholm_urllib = FakeDepressingUrllib('Stockholm', 'Sweden', 1000, 1400)
+        self.assertEqual(WeatherApi(fake_stockholm_urllib).sunrise_and_sunset('Stockholm'),
                          (1000, 1400))
-        self.assertEqual(weather_api.sunrise_and_sunset('Barcelona'),
+        fake_barcelona_urllib = FakeDepressingUrllib('Barcelona', 'Spain', 559, 2201)
+        self.assertEqual(WeatherApi(fake_barcelona_urllib).sunrise_and_sunset('Barcelona'),
                          (559, 2201))
