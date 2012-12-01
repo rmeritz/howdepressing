@@ -17,27 +17,25 @@ class AcceptanceTest(LiveServerTestCase):
         self.browser.quit()
 
     def testUserCanSeeDepression(self):
-        index = self.browser.get(self.live_server_url)
-        location_field = self.browser.find_element_by_name('location')
-        location_field.send_keys('Stockholm')
-        location_field.send_keys(Keys.RETURN)
-
-        body = self.browser.find_element_by_tag_name('body')
+        self.lookup_location('Stockholm')
+        depression_text = self.browser.find_element_by_id('depression-text')
         self.assertEqual(
-            body.get_attribute("innerHTML"),
+            depression_text.get_attribute("innerHTML"),
             "Very Depressing")
 
     def testUserCanSeeError(self):
         erroring_place = 'NonexistantPlace'
-        index = self.browser.get(self.live_server_url)
-        location_field = self.browser.find_element_by_name('location')
-        location_field.send_keys(erroring_place)
-        location_field.send_keys(Keys.RETURN)
-
+        self.lookup_location(erroring_place)
         body = self.browser.find_element_by_tag_name('body')
         self.assertEqual(
             body.get_attribute("innerHTML"),
             "We're depressed to tell you we don't know how depressing %s is at the moment." % erroring_place)
+
+    def lookup_location(self, location_name):
+        index = self.browser.get(self.live_server_url)
+        location_field = self.browser.find_element_by_name('location')
+        location_field.send_keys(location_name)
+        location_field.send_keys(Keys.RETURN)
 
 class FakeWeatherApi:
     def __init__(self, sunrise, sunset):
@@ -73,7 +71,13 @@ class DepressionIndicatorTest(unittest.TestCase):
         self.assertDepressionLevel(sunrise = 901, sunset = 1659,
                                    level = "Very Depressing")
 
+    def testGetters(self):
+        indicator = DepressionIndicator(800,1900)
+        self.assertEqual(indicator.sunrise, 800)
+        self.assertEqual(indicator.sunset, 1900)
+
     def assertDepressionLevel(self, sunrise, sunset, level):
+
         self.assertEqual(DepressionIndicator(sunrise, sunset).text(),
                          level)
 
