@@ -1,0 +1,24 @@
+#morning-darkness, #evening-darkness {
+    background-color: black;
+}
+
+#morning-darkness, #daylight, #evening-darkness {
+    float: left;
+    height: 100%;
+}
+
+#morning-darkness{
+    width: {{ morning_darkness }}%;
+}
+
+#daylight{
+    width: {{ daylight }}%;
+}
+
+#evening-darkness{
+    width: {{ evening_darkness }}%;
+}
+
+body{
+    margin: 0 0 0 0;
+}
