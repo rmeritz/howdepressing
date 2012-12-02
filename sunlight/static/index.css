@@ -1,0 +1,28 @@
+body{
+    background-image: url("/static/hot-babe.jpeg");
+    background-size: cover;
+    backround-repeat: none;
+    margin: 0 0 0 0;
+    color: white;
+    font-family: cursive;
+}
+
+form{
+    margin-left: 1em;
+    margin-top: 1em;
+}
+
+form, input {
+    font-size: 30pt
+}
+
+input[type=text] {
+    width: 50%;
+    text-align: right
+}
+
+input[type=submit] {
+    font-size: 30%;
+    margin-left: 0%;
+    text-align: right;
+}
