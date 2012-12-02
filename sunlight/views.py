@@ -4,7 +4,7 @@ from django.shortcuts import render_to_response, redirect
 from django.core.context_processors import csrf
 import urllib
 
-from sunlight.models import SunlightDetector, WeatherApi
+from sunlight.models import SunlightDetector, WeatherApi, GeoApi
 
 def index(request):
     context = RequestContext(request)
@@ -14,8 +14,9 @@ def index(request):
 def location(request):
     location = request.path.strip('/')
     try:
-        detector = SunlightDetector(location, WeatherApi(urllib))
-        context = {'depression_indicator': detector.detect()}
+        detector = SunlightDetector(location, GeoApi(urllib), WeatherApi(urllib))
+        (city, country, sunrise, sunset) = detector.detect()
+        context = { 'city': city, 'country': country, 'sunrise': sunrise, 'sunset': sunset }
         return render_to_response('location.html', context)
     except:
         context = RequestContext(request)

@@ -5,8 +5,8 @@ from selenium.webdriver.common.keys import Keys
 
 import StringIO
 
-from sunlight.models import SunlightDetector, DepressionIndicator
-from sunlight.models import WeatherApi
+from sunlight.models import SunlightDetector
+from sunlight.models import WeatherApi, GeoApi
 
 class AcceptanceTest(LiveServerTestCase):
     def setUp(self):
@@ -42,7 +42,7 @@ class FakeWeatherApi:
         self.sunrise = sunrise
         self.sunset = sunset
 
-    def sunrise_and_sunset(self, location):
+    def sunrise_and_sunset(self, city, country):
         return (self.sunrise, self.sunset)
 
 class SunlightDetectorTest(unittest.TestCase):
@@ -57,29 +57,6 @@ class SunlightDetectorTest(unittest.TestCase):
         detector = SunlightDetector('barcelona', fake_weather_api)
         depression_indicator = detector.detect()
         assert "Not Depressing" == depression_indicator.text()
-
-class DepressionIndicatorTest(unittest.TestCase):
-    def testTextMatchDepressionLevel(self):
-        self.assertDepressionLevel(sunrise = 759, sunset = 2201,
-                                   level = "Not Depressing")
-        self.assertDepressionLevel(sunrise = 800, sunset = 2200,
-                                   level = "Not Depressing")
-        self.assertDepressionLevel(sunrise = 801, sunset = 2159,
-                                   level = "Depressing")
-        self.assertDepressionLevel(sunrise = 900, sunset = 1700,
-                                   level = "Depressing")
-        self.assertDepressionLevel(sunrise = 901, sunset = 1659,
-                                   level = "Very Depressing")
-
-    def testGetters(self):
-        indicator = DepressionIndicator(800,1900)
-        self.assertEqual(indicator.sunrise, 800)
-        self.assertEqual(indicator.sunset, 1900)
-
-    def assertDepressionLevel(self, sunrise, sunset, level):
-
-        self.assertEqual(DepressionIndicator(sunrise, sunset).text(),
-                         level)
 
 class FakeDepressingUrllib:
     def __init__(self, city, country, sunrise, sunset):
@@ -207,11 +184,31 @@ class FakeDepressingUrllib:
 }"""
         return json % location_data
 
+class FakeGeoApi(unittest.TestCase):
+    def __init__(self, locations):
+        self.locations = locations
+
+    def city_and_country(self, location):
+        return self.locations[location]
+
 class WeatherApiTest(unittest.TestCase):
     def testFindsSunriseAndSunset(self):
         fake_stockholm_urllib = FakeDepressingUrllib('Stockholm', 'Sweden', 1000, 1400)
-        self.assertEqual(WeatherApi(fake_stockholm_urllib).sunrise_and_sunset('Stockholm'),
+        self.assertEqual(WeatherApi(fake_stockholm_urllib).sunrise_and_sunset('Stockholm', 'Sweden'),
                          (1000, 1400))
         fake_barcelona_urllib = FakeDepressingUrllib('Barcelona', 'Spain', 559, 2201)
-        self.assertEqual(WeatherApi(fake_barcelona_urllib).sunrise_and_sunset('Barcelona'),
+        self.assertEqual(WeatherApi(fake_barcelona_urllib).sunrise_and_sunset('Barcelona', 'Spain'),
                          (559, 2201))
+
+class GeoApiTest(unittest.TestCase):
+    def testFindsCityAndCountry(self):
+        fake_stockholm_urllib = FakeDepressingUrllib('Stockholm', 'Sweden', 1000, 1400)
+        self.assertEqual(GeoApi(fake_stockholm_urllib).city_and_country('Stockholm'),
+                         ('Stockholm', 'Sweden'))
+
+class SunlightDetectorTest(unittest.TestCase):
+    def testDetect(self):
+        fake_geo_api = FakeGeoApi({'Stockholm': ('Stockholm', 'Sweden')})
+        fake_weather_api = FakeWeatherApi(1000, 1400)
+        detector = SunlightDetector('Stockholm', fake_geo_api, fake_weather_api)
+        self.assertEqual(detector.detect(), ('Stockholm', 'Sweden', 1000, 1400))
