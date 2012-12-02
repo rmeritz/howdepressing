@@ -3,7 +3,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 from sunlight import views
 
-urlpatterns = patterns(
+urlpatterns= patterns('')
+
+if not settings.DEBUG:
+    urlpatterns += patterns('',
+        (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
+    )
+
+urlpatterns += patterns(
     '',
     url(r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': 'favicon.ico'}),
     url(r'location.css', views.darkness, name='darkness'),
@@ -11,8 +18,3 @@ urlpatterns = patterns(
     url(r'.+$', views.location, name='location'),
     url(r'', views.index, name='index')
     ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-
-if not settings.DEBUG:
-    urlpatterns += patterns('',
-        (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
-    )
