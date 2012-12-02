@@ -18,8 +18,9 @@ def location(request):
         context = {'depression_indicator': detector.detect()}
         return render_to_response('location.html', context)
     except:
-        error = "We're depressed to tell you we don't know how depressing %s is at the moment." % location
-        return HttpResponse(content=error, status=500)
+        context = RequestContext(request)
+        context.update({'location': location})
+        return render_to_response('detector_error.html', context) 
 
 def sunlight(request):
     return redirect('/' + request.POST['location'])

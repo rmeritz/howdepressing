@@ -1,0 +1,14 @@
+body{
+    background-image: url("/static/depression.jpg");
+    background-size: cover;
+    backround-repeat: none;
+    margin: 0 0 0 0;
+    color: white;
+    font-size: 25pt;
+}
+
+p{
+    float: right;
+    width: 50%;
+    padding-right: 1em;
+}

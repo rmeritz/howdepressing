@@ -3,7 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from sunlight import views
 
-urlpatterns= patterns('')
+urlpatterns = patterns('')
 
 if not settings.DEBUG:
     urlpatterns += patterns('',
