@@ -7,7 +7,9 @@ import urllib
 from sunlight.models import SunlightDetector, WeatherApi
 
 def index(request):
-    return render_to_response('index.html', csrf(request))
+    context = RequestContext(request)
+    context.update(csrf(request))
+    return render_to_response('index.html', context)
 
 def location(request):
     location = request.path.strip('/')
