@@ -7,25 +7,42 @@
     height: 100%;
 }
 
-#morning-darkness{
+#morning-darkness {
     width: {{ morning_darkness }}%;
 }
 
-#daylight{
+#daylight {
     width: {{ daylight }}%;
 }
 
-#evening-darkness{
+#evening-darkness {
     width: {{ evening_darkness }}%;
     color: grey;
 }
 
-#evening-darkness p{
-    position: fixed;
-    bottom: 1em;
-    right: 2em;
+#evening-darkness p {
+    width: {{ evening_darkness }}%;
 }
 
-body{
+#description {
+    position: fixed;
+    bottom: 3em;
+    right: 1em;
+    text-align: right;
+}
+
+#byline {
+    position: fixed;
+    bottom: 1em;
+    right: 1em;
+    text-align: right;
+}
+
+#byline a:link, #byline a:visited {
+    color: grey;
+    text-decoration: none;
+}
+
+body {
     margin: 0 0 0 0;
 }
