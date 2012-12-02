@@ -17,6 +17,13 @@
 
 #evening-darkness{
     width: {{ evening_darkness }}%;
+    color: grey;
+}
+
+#evening-darkness p{
+    position: fixed;
+    bottom: 1em;
+    right: 2em;
 }
 
 body{

@@ -1,13 +1,15 @@
 <head>
   <link rel="stylesheet"
-	href="/location.css?sunrise={{ depression_indicator.sunrise }}&sunset={{ depression_indicator.sunset }}"/>
+	href="/location.css?sunrise={{ sunrise }}&sunset={{ sunset }}"/>
 </head>
 
 <body>
   <div id="morning-darkness"></div>
   <div id="daylight"></div>
-  <div id="evening-darkness"></div>
-
-  <p id="depression-text">{{ depression_indicator.text }}</p>
-  <p>The sun rises at {{ depression_indicator.sunrise }}</p>
+  <div id="evening-darkness">
+    <p>
+      A visual representation of the diurnal rhythms of
+      <span id="full-location">{{ city }}, {{ country }}</span>.
+    </p>
+  </div>
 </body>

@@ -31,7 +31,6 @@ def darkness(request):
     morning_darkness = sunrise/24
     evening_darkness = (2400 -sunset)/24
     daylight = 100 - morning_darkness - evening_darkness
-    print (morning_darkness, daylight, evening_darkness)
     context = {'morning_darkness': morning_darkness,
                'evening_darkness': evening_darkness,
                'daylight': daylight}

@@ -18,15 +18,15 @@ class AcceptanceTest(LiveServerTestCase):
 
     def testUserCanSeeDepression(self):
         self.lookup_location('Stockholm')
-        depression_text = self.browser.find_element_by_id('depression-text')
+        full_location = self.browser.find_element_by_id('full-location')
         self.assertEqual(
-            depression_text.get_attribute("innerHTML"),
-            "Very Depressing")
+            full_location.get_attribute("innerHTML"),
+            "Stockholm, Sweden")
 
     def testUserCanSeeError(self):
         erroring_place = 'NonexistantPlace'
         self.lookup_location(erroring_place)
-        body = self.browser.find_element_by_tag_name('body')
+        body = self.browser.find_element_by_tag_name('p')
         self.assertEqual(
             body.get_attribute("innerHTML"),
             "We're depressed to tell you we don't know how depressing %s is at the moment." % erroring_place)
