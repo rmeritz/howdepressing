@@ -4,9 +4,9 @@
 </head>
 
 <body>
-  <div id="morning-darkness"></div>
-  <div id="daylight"></div>
-  <div id="evening-darkness">
+  <div id="morning-darkness" title="The sun rises at {{ sunrise_readable }}."></div>
+  <div id="daylight" title="Only {{ daylight_readable }}% of your day is daylight."></div>
+  <div id="evening-darkness" title="The sun leaves you at {{ sunset_readable }}.">
     <p id="description">
       A visual representation of the diurnal rhythms of
       <span id="full-location">{{ city }}, {{ country }}</span>.

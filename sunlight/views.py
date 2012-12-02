@@ -16,7 +16,18 @@ def location(request):
     try:
         detector = SunlightDetector(location, GeoApi(urllib), WeatherApi(urllib))
         (city, country, sunrise, sunset) = detector.detect()
-        context = { 'city': city, 'country': country, 'sunrise': sunrise, 'sunset': sunset }
+        sunrise_readable = "%s:%s" % (sunrise / 100, sunrise % 100)
+        sunset_readable = "%s:%s" % (sunset / 100, sunrise % 100)
+        daylight_readable = str(int(round((sunset - sunrise) / 2400.0 * 100)))
+        context = {
+            'city': city,
+            'country': country,
+            'sunrise': sunrise,
+            'sunset': sunset,
+            'sunrise_readable': sunrise_readable,
+            'daylight_readable': daylight_readable,
+            'sunset_readable': sunset_readable
+         }
         return render_to_response('location.html', context)
     except:
         context = RequestContext(request)
