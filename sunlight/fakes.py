@@ -47,9 +47,12 @@ class FakeDepressingUrllib:
         return json % sunlight_strings
 
     def __google_json(self, city, country):
-        location_data = {'city': city, 'country':country}
-        json = open('./sunlight/fixtures/google.json').read()
-        return json % location_data
+        if city == 'Boston':
+            return open('./sunlight/fixtures/google_boston.json').read()
+        else:
+            location_data = {'city': city, 'country':country}
+            json = open('./sunlight/fixtures/google.json').read()
+            return json % location_data
 
 class FakeGeoApi:
     def __init__(self, locations):

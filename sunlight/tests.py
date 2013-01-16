@@ -67,6 +67,10 @@ class GeoApiTest(unittest.TestCase):
         fake_stockholm_urllib = FakeDepressingUrllib('Stockholm', 'Sweden', 1000, 1400)
         self.assertEqual(GeoApi(fake_stockholm_urllib).city_and_country('Stockholm'),
                          ('Stockholm', 'Sweden'))
+        fake_boston_urllib = FakeDepressingUrllib('Boston', 'USA', 900, 1700)
+        # Cities in USA should return state for Country
+        self.assertEqual(GeoApi(fake_boston_urllib).city_and_country('Boston'),
+                         ('Boston', 'MA'))
 
 class SunlightDetectorTest(unittest.TestCase):
     def testDetect(self):
