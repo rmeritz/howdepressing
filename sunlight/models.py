@@ -20,9 +20,17 @@ class GeoApi:
         json_file = self.urllib.urlopen(self.__google_url(location))
         location_info = json.load(json_file)
         address_components = location_info['results'][0]['address_components']
-        city = filter(lambda x: x['types'] == [u'locality', u'political'], address_components)[0]['long_name']
-        country = filter(lambda x: x['types'] == [u'country', u'political'], address_components)[0]['long_name']
-        return (city, country)
+        return (self.__city(address_components), self.__country(address_components))
+
+    def __city(self, address):
+        return filter(lambda x: x['types'] == [u'locality', u'political'], address)[0]['long_name']
+
+    def __country(self, address):
+        country = filter(lambda x: x['types'] == [u'country', u'political'], address)[0]['long_name']
+        if country == 'United States':
+            return filter(lambda x: x['types'] == [u'administrative_area_level_1', u'political'], address)[0]['short_name']
+        else:
+            return country
 
     def __google_url(self, location):
         return ("https://maps.googleapis.com/maps/api/geocode/json?"
@@ -31,7 +39,7 @@ class GeoApi:
 class WeatherApi:
     def __init__(self, urllib):
         self.urllib = urllib
-        
+
     def sunrise_and_sunset(self, city, country):
         json_file = self.urllib.urlopen(self.__wunder_url(city, country))
         weather_info = json.load(json_file)
