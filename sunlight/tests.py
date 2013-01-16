@@ -93,95 +93,12 @@ class FakeDepressingUrllib:
             'sunset_hour': "%02d" % (sunset/100),
             'sunset_minute': "%02d" % (sunset % 100)
             }
-        json = """
-{
-  "response": {
-  "version": "0.1",
-  "termsofService": "http://www.wunderground.com/weather/api/d/terms.html",
-  "features": {
-  "astronomy": 1
-  }
-  },
-  "moon_phase": {
-  "percentIlluminated": "81",
-  "ageOfMoon": "10",
-  "current_time": {
-  "hour": "9",
-  "minute": "56"
-  },
-  "sunrise": {
-  "hour": "%(sunrise_hour)s",
-  "minute": "%(sunrise_minute)s"
-  },
-  "sunset": {
-  "hour": "%(sunset_hour)s",
-  "minute": "%(sunset_minute)s"
-  }
-  }
-}"""
+        json = open('./sunlight/fixtures/wunderground.json').read()
         return json % sunlight_strings
 
     def __google_json(self, city, country):
         location_data = {'city': city, 'country':country}
-        json = """{
-   "results" : [
-         {
-         "address_components" : [
-            {
-               "long_name" : "%(city)s",
-               "short_name" : "Barcelona",
-               "types" : [ "locality", "political" ]
-            },
-            {
-               "long_name" : "Barcelona",
-               "short_name" : "B",
-               "types" : [ "administrative_area_level_2", "political" ]
-            },
-            {
-               "long_name" : "Catalua",
-               "short_name" : "CT",
-               "types" : [ "administrative_area_level_1", "political" ]
-            },
-            {
-               "long_name" : "%(country)s",
-               "short_name" : "ES",
-               "types" : [ "country", "political" ]
-            }
-         ],
-      
-         "formatted_address" : "Stockholm, Sweden",
-         "geometry" : {
-            "bounds" : {
-               "northeast" : {
-                  "lat" : 59.42784089999999,
-                  "lng" : 18.1982290
-               },
-               "southwest" : {
-                  "lat" : 59.2244430,
-                  "lng" : 17.77686210
-               }
-            },
-            "location" : {
-               "lat" : 59.32893000000001,
-               "lng" : 18.064910
-            },
-            "location_type" : "APPROXIMATE",
-            "viewport" : {
-               "northeast" : {
-                  "lat" : 59.42784089999999,
-                  "lng" : 18.1982290
-               },
-               "southwest" : {
-                  "lat" : 59.2244430,
-                  "lng" : 17.77686210
-               }
-            }
-         },
-         "types" : [ "locality", "political" ]
-      }
-   ],
-   "status" : "OK"
-}"""
+        json = open('./sunlight/fixtures/google.json').read()
         return json % location_data
 
 class FakeGeoApi(unittest.TestCase):
