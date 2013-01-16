@@ -29,7 +29,8 @@ class AcceptanceTest(LiveServerTestCase):
         body = self.browser.find_element_by_tag_name('p')
         self.assertEqual(
             body.get_attribute("innerHTML"),
-            "We're depressed to tell you we don't know how depressing %s is at the moment." % erroring_place)
+            "We're depressed to tell you we don't know how depressing"
+            " %s is at the moment." % erroring_place)
 
     def lookup_location(self, location_name):
         index = self.browser.get(self.live_server_url)
@@ -52,12 +53,14 @@ class SunlightDetectorTest(unittest.TestCase):
 
 class WeatherApiTest(unittest.TestCase):
     def testFindsSunriseAndSunset(self):
-        fake_stockholm_urllib = FakeDepressingUrllib('Stockholm', 'Sweden', 1000, 1400)
-        self.assertEqual(WeatherApi(fake_stockholm_urllib).sunrise_and_sunset('Stockholm', 'Sweden'),
-                         (1000, 1400))
-        fake_barcelona_urllib = FakeDepressingUrllib('Barcelona', 'Spain', 559, 2201)
-        self.assertEqual(WeatherApi(fake_barcelona_urllib).sunrise_and_sunset('Barcelona', 'Spain'),
-                         (559, 2201))
+        fake_stockholm_urllib = FakeDepressingUrllib(
+            'Stockholm', 'Sweden', 1000, 1400)
+        self.assertEqual(WeatherApi(fake_stockholm_urllib).sunrise_and_sunset(
+                'Stockholm', 'Sweden'), (1000, 1400))
+        fake_barcelona_urllib = FakeDepressingUrllib(
+            'Barcelona', 'Spain', 559, 2201)
+        self.assertEqual(WeatherApi(fake_barcelona_urllib).sunrise_and_sunset(
+                'Barcelona', 'Spain'), (559, 2201))
 
 class GeoApiTest(unittest.TestCase):
     def testFindsCityAndCountry(self):
